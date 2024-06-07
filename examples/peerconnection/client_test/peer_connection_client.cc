@@ -1,26 +1,21 @@
-#include "media/base/media_engine.h"
-#include "rtc_base/ssl_adapter.h"
-#include "rtc_base/win32_socket_init.h"
-#include "rtc_base/win32_socket_server.h"
+#include "peer_connection_client.h"
+
+#include "api/units/time_delta.h"
+#include "defaults.h"
+#include "rtc_base/async_dns_resolver.h"
+#include "rtc_base/logging.h"
+#include "rtc_base/checks.h"
+#include "rtc_base/net_helpers.h"
 #include "rtc_base/thread.h"
 
+namespace {
+    constexpr char kByeMessage[] = "BYE";
+    constexpr webrtc::TimeDelta kReconnectDelay = webrtc::TimeDelta::Seconds(2);
 
+    rtc::Socket* CreateClientSocket(int family) {
+        rtc::Thread* thread = rtc::Thread::Current();
+        RTC_DCHECK(thread != NULL);
+        return thread->socketserver()->CreateSocket(family, SOCK_STREAM);
+    }
 
-int main() {
-
-    rtc::InitializeSSL();
-    rtc::Win32SocketInitializer socket_init;
-
-    auto media_engine = webrtc::MediaEngine::Create();
-
-    rtc::SSLAdapter::Create();
-
-    rtc::SocketServer w32_ss;
-    rtc::AsyncSocket w32_socket(&w32_ss);
-
-    rtc::Win32Thread w32_thread;
-
-
-
-    return 0;
 }
